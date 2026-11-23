@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAGA CHUPURO — Plataforma Municipal de Recaudación Tributaria</title>
+<link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+
+<!-- Franja Oficial Superior -->
+<div class="gov-strip">
+  <div class="gov-strip-inner">
+    <span><strong>Municipalidad Distrital de Chupuro</strong> · Provincia de Huancayo, Región Junín</span>
+    <span>DEMO LOCAL · Pagos, conciliación bancaria y SMS simulados</span>
+  </div>
+</div>
+
+<!-- Cabecera y Navegación -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand" onclick="switchView('inicio', document.querySelectorAll('.nav-tab')[0])">
+      <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="40" height="40" rx="9" fill="#122642"/>
+        <path d="M20 7L31 11.5V20.5C31 27.1 26.2 32.3 20 34C13.8 32.3 9 27.1 9 20.5V11.5L20 7Z" stroke="#E5B97C" stroke-width="1.8" fill="rgba(255,255,255,0.06)"/>
+        <path d="M14 23L18.5 16L22.5 20.5L26 15.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="20" cy="26.5" r="2" fill="#E5B97C"/>
+      </svg>
+      <div>
+        <div class="brand-title">PAGA CHUPURO</div>
+        <div class="brand-sub">Sistema Municipal de Pago Digital</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs" aria-label="Navegación principal">
+      <button class="nav-tab active" onclick="switchView('inicio', this)">Inicio y Red Distrital</button>
+      <button class="nav-tab" onclick="switchView('contribuyente', this)">Portal del Contribuyente</button>
+      <button class="nav-tab" onclick="switchView('bodegas', this)">Agentes BCP (Bodegas)</button>
+      <button class="nav-tab" onclick="switchView('tesoreria', this)">Tesorería y Rentas</button>
+      <button class="nav-tab" onclick="switchView('ti', this)">Centro Técnico TI</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="btnMobile" onclick="toggleMobile()" title="Alternar vista móvil responsiva">Vista móvil</button>
+      <button class="icon-btn" onclick="resetState()" title="Restaurar estado inicial">&#8635; Reiniciar</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+
+<!-- ======================================================================
+     1. INICIO Y RED DISTRITAL DE CHUPURO
+     ====================================================================== -->
+<section id="view-inicio" class="view active">
+
+  <div class="hero-panel">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Servicios Tributarios Digitales · Ejercicio Fiscal 2026</span>
+      <h1>Paga tu Impuesto Predial y Arbitrios desde tu celular o en la bodega de tu barrio</h1>
+      <p>
+        Sin colas en ventanilla ni traslados a Huancayo. Consulta tu estado de cuenta en segundos y cancela mediante
+        <strong>Yape QR</strong>, <strong>Pasarela BCP</strong> o en cualquiera de las <strong>5 bodegas autorizadas</strong> del distrito de Chupuro.
+      </p>
+      <div class="hero-search">
+        <input id="heroDni" type="text" maxlength="10" placeholder="Ingresa tu DNI o código de predio (ej. 00000001)">
+        <button class="btn btn-accent" onclick="consultarDesdeInicio()">Consultar deuda</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-tile">
+        <div class="sv num">5 puntos</div>
+        <div class="sl">Bodegas Agente BCP activas en 4 sectores</div>
+      </div>
+      <div class="stat-tile">
+        <div class="sv num">24 / 7</div>
+        <div class="sl">Pago web disponible con Yape y BCP</div>
+      </div>
+      <div class="stat-tile">
+        <div class="sv num">Inmediato</div>
+        <div class="sl">Comprobante electrónico y envío por SMS</div>
+      </div>
+      <div class="stat-tile">
+        <div class="sv num">S/ 0.00</div>
+        <div class="sl">Sin comisiones adicionales al vecino</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapa Distrital + Ficha de Punto Seleccionado -->
+  <div class="grid-main">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Red de Recaudación del Distrito de Chupuro</div>
+          <div class="card-desc">Seleccione una bodega autorizada o el Palacio Municipal para ver ubicación, horario y estado de atención</div>
+        </div>
+        <span class="badge bg-ok">Cobertura distrital activa</span>
+      </div>
+
+      <div class="map-frame">
+        <svg class="map-svg" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Terreno y curvas topográficas sutiles del Valle del Mantaro -->
+          <rect width="760" height="400" fill="#f3f1eb"/>
+          <path d="M0,78 Q190,42 390,68 T760,46 L760,0 L0,0 Z" fill="#e6ece3"/>
+          <path d="M0,335 Q210,295 430,328 T760,300 L760,400 L0,400 Z" fill="#e4ece2"/>
+          <path d="M0,120 Q240,95 480,115 T760,92" fill="none" stroke="#e2dfd6" stroke-width="1"/>
+          <path d="M0,260 Q220,235 450,255 T760,238" fill="none" stroke="#e2dfd6" stroke-width="1"/>
+
+          <!-- Río Mantaro (tono cartográfico sobrio) -->
+          <path d="M-10,362 Q175,332 340,356 T635,336 T775,360" fill="none" stroke="#b7d4e6" stroke-width="18" stroke-linecap="round"/>
+          <path d="M-10,362 Q175,332 340,356 T635,336 T775,360" fill="none" stroke="#d9eaf5" stroke-width="4" stroke-linecap="round"/>
+          <text x="580" y="383" font-size="10.5" font-weight="600" fill="#4b6c82">Margen Río Mantaro · Ruta a Huancayo</text>
+
+          <!-- Vías principales y caminos vecinales -->
+          <path d="M35,205 L210,192 L385,178 L568,154 L730,176" fill="none" stroke="#cfd5de" stroke-width="10" stroke-linecap="round"/>
+          <path d="M35,205 L210,192 L385,178 L568,154 L730,176" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="7 6"/>
+          <path d="M385,178 L385,84" fill="none" stroke="#cfd5de" stroke-width="7" stroke-linecap="round"/>
+          <path d="M210,192 L152,288" fill="none" stroke="#cfd5de" stroke-width="7" stroke-linecap="round"/>
+          <path d="M568,154 L614,274" fill="none" stroke="#cfd5de" stroke-width="7" stroke-linecap="round"/>
+
+          <!-- Delimitación suave de sectores -->
+          <rect x="282" y="130" width="210" height="92" rx="14" fill="#ece7d8" stroke="#d5ccb4" stroke-width="1.2"/>
+          <text x="387" y="147" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.04em" fill="#6b5c3e">CHUPURO CENTRO</text>
+
+          <rect x="298" y="44" width="174" height="58" rx="12" fill="#e9edf3" stroke="#cbd4e1" stroke-width="1"/>
+          <text x="385" y="60" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.04em" fill="#3a4c66">BARRIO SAN JUAN</text>
+
+          <rect x="64" y="250" width="176" height="64" rx="12" fill="#e8eee9" stroke="#c3d4c7" stroke-width="1"/>
+          <text x="152" y="266" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.04em" fill="#315442">SECTOR SOCOS</text>
+
+          <rect x="524" y="236" width="184" height="64" rx="12" fill="#efeaf2" stroke="#d5c6de" stroke-width="1"/>
+          <text x="616" y="252" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.04em" fill="#583a69">ANEXO CARHUAPACCHA</text>
+
+          <!-- Enlaces de sincronización hacia Palacio Municipal -->
+          <line x1="335" y1="184" x2="432" y2="180" stroke="#1d3a63" stroke-width="1.8" class="route-anim" opacity="0.6"/>
+          <line x1="385" y1="84" x2="432" y2="180" stroke="#1d3a63" stroke-width="1.6" class="route-anim" opacity="0.5"/>
+          <line x1="152" y1="288" x2="432" y2="180" stroke="#1d3a63" stroke-width="1.6" class="route-anim" opacity="0.5"/>
+          <line x1="614" y1="274" x2="432" y2="180" stroke="#1d3a63" stroke-width="1.6" class="route-anim" opacity="0.5"/>
+          <line x1="676" y1="174" x2="432" y2="180" stroke="#1d3a63" stroke-width="1.6" class="route-anim" opacity="0.5"/>
+
+          <!-- Palacio Municipal -->
+          <g class="map-pin" onclick="selectMapNode('muni')">
+            <circle cx="432" cy="180" r="22" fill="#122642" stroke="#e5b97c" stroke-width="2.5"/>
+            <text x="432" y="178" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">MUNI</text>
+            <text x="432" y="189" text-anchor="middle" font-size="7.5" font-weight="600" fill="#e5b97c">RENTAS</text>
+          </g>
+
+          <!-- 5 Bodegas Piloto -->
+          <g class="map-pin" onclick="selectMapNode('b1')">
+            <circle cx="335" cy="184" r="15" fill="#c45a16" stroke="#ffffff" stroke-width="2.5"/>
+            <text x="335" y="188" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">01</text>
+            <text x="335" y="211" text-anchor="middle" font-size="9" font-weight="700" fill="#182230">Plaza Principal</text>
+          </g>
+
+          <g class="map-pin" onclick="selectMapNode('b2')">
+            <circle cx="385" cy="84" r="15" fill="#c45a16" stroke="#ffffff" stroke-width="2.5"/>
+            <text x="385" y="88" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">02</text>
+            <text x="385" y="111" text-anchor="middle" font-size="9" font-weight="700" fill="#182230">Comercial San Juan</text>
+          </g>
+
+          <g class="map-pin" onclick="selectMapNode('b3')">
+            <circle cx="152" cy="288" r="15" fill="#c45a16" stroke="#ffffff" stroke-width="2.5"/>
+            <text x="152" y="292" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">03</text>
+            <text x="152" y="315" text-anchor="middle" font-size="9" font-weight="700" fill="#182230">Bodega Los Andes</text>
+          </g>
+
+          <g class="map-pin" onclick="selectMapNode('b4')">
+            <circle cx="614" cy="274" r="15" fill="#c45a16" stroke="#ffffff" stroke-width="2.5"/>
+            <text x="614" y="278" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">04</text>
+            <text x="614" y="301" text-anchor="middle" font-size="9" font-weight="700" fill="#182230">Abarrotes El Valle</text>
+          </g>
+
+          <g class="map-pin" onclick="selectMapNode('b5')">
+            <circle cx="676" cy="174" r="15" fill="#c45a16" stroke="#ffffff" stroke-width="2.5"/>
+            <text x="676" y="178" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">05</text>
+            <text x="676" y="201" text-anchor="middle" font-size="9" font-weight="700" fill="#182230">Acceso Carretera</text>
+          </g>
+
+          <!-- Leyenda Cartográfica -->
+          <rect x="14" y="14" width="212" height="66" rx="8" fill="rgba(255,255,255,0.92)" stroke="#d4dbe5"/>
+          <circle cx="30" cy="32" r="5.5" fill="#122642" stroke="#e5b97c" stroke-width="1.4"/>
+          <text x="43" y="36" font-size="10" font-weight="600" fill="#182230">Municipalidad / Tesorería</text>
+          <circle cx="30" cy="50" r="5.5" fill="#c45a16"/>
+          <text x="43" y="54" font-size="10" font-weight="600" fill="#182230">Bodega Autorizada (Agente BCP)</text>
+          <line x1="23" y1="67" x2="37" y2="67" stroke="#1d3a63" stroke-width="1.8" stroke-dasharray="4 3"/>
+          <text x="43" y="70" font-size="10" font-weight="600" fill="#475467">Sincronización en línea</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Ficha del punto seleccionado -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title" id="mapTitle">—</div>
+          <div class="card-desc" id="mapSub">—</div>
+        </div>
+        <span class="badge bg-ok" id="mapBadge">Activo</span>
+      </div>
+      <div id="mapBody" style="font-size:0.84rem; color:var(--text-sec);"></div>
+      <div id="mapActions" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+    </div>
+  </div>
+
+  <!-- Cómo funciona (3 pasos sobrios) -->
+  <div class="grid-3">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Consulta tu cuenta con tu DNI</h3>
+      <p>Ingresa tu número de DNI o código de predio para revisar en línea tus recibos pendientes de Impuesto Predial y Arbitrios.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>Elige tu canal preferido</h3>
+      <p>Paga directamente con código QR de Yape, mediante la pasarela del BCP o en efectivo en la bodega autorizada más cercana a tu sector.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>Recibe tu constancia al instante</h3>
+      <p>Tu pago se concilia automáticamente con la Subgerencia de Rentas y recibes tu comprobante electrónico por pantalla y mensaje SMS.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ======================================================================
+     2. PORTAL DEL CONTRIBUYENTE
+     ====================================================================== -->
+<section id="view-contribuyente" class="view">
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Consulta de Estado de Cuenta Tributario</div>
+            <div class="card-desc">Impuesto Predial y Arbitrios Municipales · Periodo 2026</div>
+          </div>
+          <span class="badge bg-navy">Atención en línea</span>
+        </div>
+
+        <div class="input-group">
+          <input id="dniInput" class="input num" type="text" maxlength="10" placeholder="Número de DNI (8 dígitos) o Código de Predio" value="00000001">
+          <button class="btn btn-navy" onclick="buscarContribuyente()">Consultar</button>
+        </div>
+
+        <div class="quick-bar">
+          <span>Acceso rápido:</span>
+          <button class="q-link num" onclick="cargarDni('00000001')">00000001</button>
+          <button class="q-link num" onclick="cargarDni('00000002')">00000002</button>
+          <button class="q-link num" onclick="cargarDni('00000003')">00000003</button>
+          <button class="q-link num" onclick="cargarDni('00000004')">00000004</button>
+          <button class="q-link num" onclick="cargarDni('00000005')">00000005</button>
+        </div>
+      </div>
+
+      <div id="tpResultCard" class="card" style="display:none;">
+        <div class="card-head">
+          <div>
+            <div class="card-title" id="tpName">—</div>
+            <div class="card-desc num" id="tpMeta">—</div>
+          </div>
+          <span class="badge" id="tpStatus">—</span>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:36px;">Sel.</th>
+                <th>Concepto Tributario</th>
+                <th>Periodo</th>
+                <th style="text-align:right;">Importe</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tpDebtsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="privacy-box">
+          <input type="checkbox" id="chkLey" checked onchange="actualizarTotalPago()">
+          <label for="chkLey">
+            Autorizo el tratamiento de mis datos personales y tributarios conforme a la <strong>Ley N.° 29733</strong>, únicamente para el procesamiento y conciliación de este pago entre la Municipalidad Distrital de Chupuro y el BCP.
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div class="card-desc">Monto seleccionado a pagar</div>
+            <div class="num" style="font-size:1.45rem; font-weight:800; color:var(--navy);" id="tpTotal">S/ 0.00</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="btnYape" class="btn btn-yape" onclick="abrirCheckout('Yape QR')">Pagar con Yape QR</button>
+            <button id="btnBcp" class="btn btn-bcp" onclick="abrirCheckout('Pasarela BCP')">Pagar con BCP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Pasarela y Comprobante -->
+    <div>
+      <div id="payInfoCard" class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Pasarela de Pago Municipal</div>
+            <div class="card-desc">Conexión cifrada TLS 1.3 · Convenio BCP</div>
+          </div>
+          <span class="badge bg-ok">Canal seguro</span>
+        </div>
+
+        <div id="payIdle" style="padding:18px 6px; color:var(--text-sec); font-size:0.83rem;">
+          <p style="margin-bottom:12px;">Seleccione los recibos que desea cancelar y elija su medio de pago para generar su orden segura.</p>
+          <div class="kv-row"><span>Validación contable</span><strong>Automática en línea</strong></div>
+          <div class="kv-row"><span>Emisión de comprobante</span><strong>Electrónico + SMS</strong></div>
+          <div class="kv-row"><span>Comisión por transacción</span><strong>S/ 0.00</strong></div>
+          <div class="kv-row"><span>Compatibilidad</span><strong>Web móvil 3G / 4G</strong></div>
+        </div>
+
+        <div id="payActive" style="display:none;">
+          <div id="checkoutBox" class="checkout-panel is-yape">
+            <div style="font-weight:800; font-size:0.95rem; color:var(--navy);" id="ckTitle">—</div>
+            <div style="font-size:0.78rem; color:var(--text-sec); margin-top:2px;" id="ckOrder">—</div>
+            <div class="qr-card" id="ckQr"></div>
+            <div class="num" style="font-size:1.4rem; font-weight:800; color:var(--navy);" id="ckAmount">S/ 0.00</div>
+            <div class="num" style="font-size:0.74rem; color:var(--text-muted); margin:4px 0 14px;">
+              Código vigente por <strong id="ckTimer">04:59</strong> · Verificación SHA-256
+            </div>
+            <button id="btnConfirmPay" class="btn btn-ok" style="width:100%;" onclick="procesarPagoDigital()">
+              Confirmar pago realizado
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprobante Oficial Emitido -->
+      <div id="voucherCard" class="card" style="display:none;">
+        <div class="voucher">
+          <div class="voucher-top">
+            <div style="font-weight:800; font-size:0.95rem; color:var(--navy);">MUNICIPALIDAD DISTRITAL DE CHUPURO</div>
+            <div style="font-size:0.74rem; color:var(--text-muted);">SUBGERENCIA DE RENTAS Y TESORERÍA</div>
+            <div style="font-size:0.78rem; font-weight:700; color:var(--ok); margin-top:5px;" id="vNum">—</div>
+          </div>
+          <div id="vDetails"></div>
+          <div class="hash-strip" id="vHash">—</div>
+          <div style="display:flex; gap:8px; margin-top:14px;" class="no-print">
+            <button class="btn btn-ghost" style="flex:1;" onclick="window.print()">Imprimir / PDF</button>
+            <button class="btn btn-navy" style="flex:1;" onclick="switchView('tesoreria', document.querySelectorAll('.nav-tab')[3])">Ver en Tesorería</button>
+          </div>
+        </div>
+
+        <div class="sms-preview">
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); margin-bottom:4px;">
+            <strong>Confirmación SMS enviada</strong>
+            <span class="num" id="vSmsTel">—</span>
+          </div>
+          <div id="vSmsMsg">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     3. MÓDULO AGENTES BCP (RED DE 5 BODEGAS)
+     ====================================================================== -->
+<section id="view-bodegas" class="view">
+
+  <div class="net-bar">
+    <div style="font-size:0.81rem; font-weight:600; color:var(--navy);">
+      Estado de enlace de la bodega: <span id="netLabel" style="color:var(--ok);">Red móvil 3G operativa</span>
+    </div>
+    <div class="net-group">
+      <button class="net-pill on-ok" id="np3g" onclick="setNet('3g')">Red 3G local</button>
+      <button class="net-pill" id="npOff" onclick="setNet('off')">Sin señal</button>
+      <button class="net-pill" id="np4g" onclick="setNet('4g')">Módem 4G respaldo</button>
+    </div>
+  </div>
+
+  <div id="offlineBanner" class="offline-banner">
+    <span><strong>Sin conexión con el servidor municipal.</strong> Para evitar cobros duplicados, las operaciones están pausadas temporalmente hasta restablecer la red o activar el módem 4G de respaldo.</span>
+    <button class="btn btn-accent btn-sm" onclick="setNet('4g')">Activar módem 4G</button>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Ventanilla Web — Agente BCP Autorizado</div>
+            <div class="card-desc">Cobro asistido en efectivo para contribuyentes sin banca móvil</div>
+          </div>
+          <span class="badge bg-accent">Red Piloto Chupuro</span>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label for="bodegaSelect" style="display:block; font-size:0.77rem; font-weight:700; color:var(--text-sec); margin-bottom:5px;">Establecimiento habilitado</label>
+          <select id="bodegaSelect" class="input" onchange="renderBodega()">
+            <option value="b1">Bodega 01 — Minimarket Plaza Principal (Chupuro Centro)</option>
+            <option value="b2">Bodega 02 — Comercial San Juan (Barrio San Juan)</option>
+            <option value="b3">Bodega 03 — Bodega Los Andes (Sector Socos)</option>
+            <option value="b4">Bodega 04 — Abarrotes El Valle (Anexo Carhuapaccha)</option>
+            <option value="b5">Bodega 05 — Multiservicios Chupuro (Acceso Carretera)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <input id="agDni" class="input num" type="text" maxlength="10" placeholder="DNI del vecino en ventanilla" value="00000002">
+          <button class="btn btn-accent" onclick="buscarEnBodega()">Buscar recibos</button>
+        </div>
+
+        <div class="quick-bar">
+          <span>Consultas frecuentes:</span>
+          <button class="q-link num" onclick="document.getElementById('agDni').value='00000002'; buscarEnBodega();">00000002</button>
+          <button class="q-link num" onclick="document.getElementById('agDni').value='00000003'; buscarEnBodega();">00000003</button>
+          <button class="q-link num" onclick="document.getElementById('agDni').value='00000005'; buscarEnBodega();">00000005</button>
+        </div>
+      </div>
+
+      <div id="agCard" class="card" style="display:none;">
+        <div class="card-head">
+          <div>
+            <div class="card-title" id="agName">—</div>
+            <div class="card-desc num" id="agMeta">—</div>
+          </div>
+          <span class="badge bg-warn">Pago en ventanilla</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>Tributo</th><th>Periodo</th><th style="text-align:right;">Importe</th><th style="text-align:right;">Acción</th></tr>
+            </thead>
+            <tbody id="agBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derecha: Arqueo y Liquidación del Turno -->
+    <div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Caja y Liquidación del Turno</div>
+            <div class="card-desc" id="agStoreName">—</div>
+          </div>
+          <span class="badge bg-ok" id="agTurnBadge">Turno abierto</span>
+        </div>
+
+        <div class="grid-2" style="gap:12px; margin-bottom:14px;">
+          <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:9px; padding:12px;">
+            <div class="kpi-lbl">Efectivo en caja</div>
+            <div class="num" style="font-size:1.35rem; font-weight:800; color:var(--navy); margin-top:3px;" id="agCash">S/ 0.00</div>
+          </div>
+          <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:9px; padding:12px;">
+            <div class="kpi-lbl">Operaciones</div>
+            <div class="num" style="font-size:1.35rem; font-weight:800; color:var(--accent); margin-top:3px;" id="agCount">0</div>
+          </div>
+        </div>
+
+        <div class="tbl-wrap" style="max-height:220px; overflow-y:auto;">
+          <table>
+            <thead><tr><th>Hora</th><th>Contribuyente</th><th style="text-align:right;">Monto</th><th>Recibo</th></tr></thead>
+            <tbody id="agHistory"></tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-navy" style="width:100%; margin-top:16px;" onclick="liquidarTurno()">
+          Ejecutar cierre y liquidación diaria
+        </button>
+
+        <div id="agCloseReceipt" style="display:none; margin-top:12px; padding:11px 13px; border-radius:8px; background:var(--ok-bg); color:var(--ok); font-size:0.79rem;"></div>
+      </div>
+
+      <div class="card" style="background:var(--bg-page);">
+        <div class="card-title" style="font-size:0.88rem; margin-bottom:6px;">Datos del punto de atención</div>
+        <div style="font-size:0.79rem; color:var(--text-sec);" id="agStoreDetails">—</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     4. TESORERÍA Y RENTAS
+     ====================================================================== -->
+<section id="view-tesoreria" class="view">
+
+  <div class="grid-4">
+    <div class="kpi k-ok">
+      <div class="kpi-lbl">Recaudación conciliada</div>
+      <div class="kpi-val num" id="kpiRev">S/ 0.00</div>
+      <div class="kpi-note">Cuadre BCP sin diferencias</div>
+    </div>
+    <div class="kpi k-yape">
+      <div class="kpi-lbl">Operaciones registradas</div>
+      <div class="kpi-val num" id="kpiOps">0</div>
+      <div class="kpi-note">Web, Yape y 5 bodegas</div>
+    </div>
+    <div class="kpi k-accent">
+      <div class="kpi-lbl">Padrón depurado</div>
+      <div class="kpi-val num">87.5%</div>
+      <div class="kpi-note">0% duplicados en producción</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Disponibilidad del servicio</div>
+      <div class="kpi-val num">99.8%</div>
+      <div class="kpi-note">Monitoreo continuo activo</div>
+    </div>
+  </div>
+
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="switchTesTab('recaudacion', this)">Recaudación y Conciliación BCP</button>
+    <button class="sub-tab" onclick="switchTesTab('padron', this)">Padrón Tributario y Depuración</button>
+  </div>
+
+  <!-- Sub-vista A: Recaudación y Conciliación -->
+  <div id="tes-recaudacion">
+    <div class="grid-main">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Distribución de Ingresos por Canal y Sector</div>
+            <div class="card-desc">Actualización automática por cada operación registrada</div>
+          </div>
+          <button class="btn btn-ok btn-sm" onclick="conciliarBcp()">Conciliar con extracto BCP</button>
+        </div>
+
+        <div id="barsCanal"></div>
+        <div style="height:1px; background:var(--bg-subtle); margin:16px 0;"></div>
+        <div style="font-size:0.78rem; font-weight:700; color:var(--navy); margin-bottom:10px;">Recaudación por sector del distrito</div>
+        <div id="barsSector"></div>
+
+        <div id="concilResult" style="display:none; margin-top:14px; padding:12px 14px; border-radius:8px; background:var(--ok-bg); color:var(--ok); font-size:0.81rem;">
+          <strong>Conciliación completada:</strong> Los abonos reportados en el extracto BCP coinciden al 100% con los comprobantes emitidos por el sistema municipal (diferencia contable: S/ 0.00).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Registro de Operaciones del Día</div>
+            <div class="card-desc">Trazabilidad contable y verificación de integridad</div>
+          </div>
+          <span class="badge bg-ok">Sincronizado</span>
+        </div>
+        <div class="tbl-wrap" style="max-height:330px; overflow-y:auto;">
+          <table>
+            <thead><tr><th>Comprobante</th><th>Contribuyente</th><th>Canal</th><th style="text-align:right;">Monto</th></tr></thead>
+            <tbody id="tesTxBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-vista B: Padrón Tributario y Depuración -->
+  <div id="tes-padron" style="display:none;">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Administración del Padrón Tributario Distrital</div>
+          <div class="card-desc">Base de datos normalizada con historial de saneamiento y control de calidad</div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn btn-navy btn-sm" id="btnPadClean" onclick="setPadronMode('clean')">Padrón vigente (saneado)</button>
+          <button class="btn btn-ghost btn-sm" id="btnPadLegacy" onclick="setPadronMode('legacy')">Registro histórico observado</button>
+        </div>
+      </div>
+
+      <div id="padControls" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+        <select id="filSector" class="input" style="max-width:210px; padding:7px 10px; font-size:0.8rem;" onchange="renderPadron()">
+          <option value="ALL">Todos los sectores</option>
+          <option value="Chupuro Centro">Chupuro Centro</option>
+          <option value="Barrio San Juan">Barrio San Juan</option>
+          <option value="Sector Socos">Sector Socos</option>
+          <option value="Anexo Carhuapaccha">Anexo Carhuapaccha</option>
+        </select>
+        <select id="filEstado" class="input" style="max-width:190px; padding:7px 10px; font-size:0.8rem;" onchange="renderPadron()">
+          <option value="ALL">Todos los estados</option>
+          <option value="Pendiente">Con saldo pendiente</option>
+          <option value="Al día">Al día</option>
+        </select>
+      </div>
+
+      <div id="padNotice" style="padding:10px 13px; border-radius:8px; font-size:0.8rem; margin-bottom:14px;"></div>
+      <div class="tbl-wrap" id="padTableWrap"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ======================================================================
+     5. CENTRO TÉCNICO TI (INTEGRACIÓN, ARQUITECTURA Y SEGURIDAD)
+     ====================================================================== -->
+<section id="view-ti" class="view">
+
+  <div class="grid-2">
+    <!-- Consola de Servicios API -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Servicios de Integración REST (BCP / Yape)</div>
+          <div class="card-desc">Verificación de contratos OpenAPI, firma SHA-256 y tiempos de respuesta</div>
+        </div>
+        <span class="badge bg-ok" id="tiLatency">410 ms promedio</span>
+      </div>
+
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+        <button class="btn btn-navy btn-sm" onclick="testEndpoint('padron')">GET /v1/padron/{dni}</button>
+        <button class="btn btn-yape btn-sm" onclick="testEndpoint('yape')">POST /v1/yape/qr</button>
+        <button class="btn btn-ok btn-sm" onclick="testEndpoint('webhook')">POST /v1/bcp/conciliar</button>
+      </div>
+
+      <div class="json-viewer" id="jsonOut">
+<span class="j-m">// Servicio de interoperabilidad activo (HTTPS TLS 1.3)</span>
+<span class="j-k">Endpoint base:</span> <span class="j-s">https://pagos.munichupuro.gob.pe/api/v1</span>
+<span class="j-k">Autenticación:</span> <span class="j-s">OAuth2 · X-Signature-SHA256</span>
+
+Seleccione un servicio para consultar su respuesta estructurada.
+      </div>
+    </div>
+
+    <!-- Seguridad y Cumplimiento -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Seguridad de la Información y Respaldos</div>
+          <div class="card-desc">Controles normativos y pruebas técnicas de operación</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="verifySecurity()">Ver controles de ejemplo</button>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Control Técnico</th><th>Configuración Vigente</th><th>Estado</th></tr></thead>
+          <tbody id="secBody">
+            <tr><td><strong>Cifrado de transporte</strong></td><td>TLS 1.3 · Certificado SSL Wildcard</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+            <tr><td><strong>Integridad transaccional</strong></td><td>Firma HMAC SHA-256 por operación</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+            <tr><td><strong>Evaluación OWASP Top 10</strong></td><td>0 vulnerabilidades críticas o altas</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+            <tr><td><strong>Privacidad (Ley N.° 29733)</strong></td><td>Consentimiento y datos cifrados en reposo</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+            <tr><td><strong>Rendimiento red rural</strong></td><td>Carga web ligera (&lt;500 KB) · API &lt;3 s</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+            <tr><td><strong>Respaldo y recuperación</strong></td><td>Backup diario cifrado · Restauración 14 min</td><td><span class="badge bg-ok">Conforme</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topología Cloud -->
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Arquitectura de Despliegue e Interoperabilidad</div>
+        <div class="card-desc">Flujo de red desde usuarios del distrito hasta infraestructura en la nube y servicios bancarios</div>
+      </div>
+      <span class="badge bg-neutral">Topología productiva</span>
+    </div>
+
+    <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:10px; padding:14px; overflow-x:auto;">
+      <svg viewBox="0 0 920 148" style="width:100%; min-width:720px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="24" width="152" height="98" rx="9" fill="#ffffff" stroke="#c8d1de" stroke-width="1.5"/>
+        <text x="86" y="48" text-anchor="middle" font-size="10.5" font-weight="700" fill="#122642">ACCESO DISTRITAL</text>
+        <text x="86" y="68" text-anchor="middle" font-size="9.5" fill="#475467">Vecinos (Web móvil 3G/4G)</text>
+        <text x="86" y="85" text-anchor="middle" font-size="9.5" fill="#475467">5 Bodegas Agente BCP</text>
+        <text x="86" y="102" text-anchor="middle" font-size="9.5" fill="#475467">Tesorería y Rentas</text>
+
+        <line x1="162" y1="73" x2="210" y2="73" stroke="#1d3a63" stroke-width="1.8" class="route-anim"/>
+
+        <rect x="210" y="34" width="136" height="78" rx="9" fill="#fdf3eb" stroke="#e2b48d" stroke-width="1.5"/>
+        <text x="278" y="60" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9a420f">DNS / WAF</text>
+        <text x="278" y="78" text-anchor="middle" font-size="9.5" fill="#5c4028">Cloudflare perimetral</text>
+        <text x="278" y="94" text-anchor="middle" font-size="9.5" fill="#5c4028">SSL Wildcard TLS 1.3</text>
+
+        <line x1="346" y1="73" x2="394" y2="73" stroke="#1d3a63" stroke-width="1.8" class="route-anim"/>
+
+        <rect x="394" y="20" width="182" height="106" rx="9" fill="#122642"/>
+        <text x="485" y="46" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">SERVIDOR CLOUD VPS</text>
+        <text x="485" y="66" text-anchor="middle" font-size="9.5" fill="#d0d9e6">Aplicación Web Responsive</text>
+        <text x="485" y="83" text-anchor="middle" font-size="9.5" fill="#d0d9e6">API Transaccional SHA-256</text>
+        <text x="485" y="100" text-anchor="middle" font-size="9.5" fill="#e5b97c">Motor de Conciliación</text>
+
+        <line x1="576" y1="50" x2="628" y2="42" stroke="#682578" stroke-width="1.8" class="route-anim"/>
+        <line x1="576" y1="96" x2="628" y2="104" stroke="#146347" stroke-width="1.8" class="route-anim"/>
+
+        <rect x="628" y="14" width="136" height="54" rx="9" fill="#f7f1f9" stroke="#d2b4db" stroke-width="1.5"/>
+        <text x="696" y="37" text-anchor="middle" font-size="10" font-weight="700" fill="#682578">PASARELA BCP / YAPE</text>
+        <text x="696" y="53" text-anchor="middle" font-size="9" fill="#475467">APIs REST y Webhooks</text>
+
+        <rect x="628" y="78" width="136" height="54" rx="9" fill="#e8f5ef" stroke="#a6d6bf" stroke-width="1.5"/>
+        <text x="696" y="101" text-anchor="middle" font-size="10" font-weight="700" fill="#146347">BASE DE DATOS 3FN</text>
+        <text x="696" y="117" text-anchor="middle" font-size="9" fill="#475467">Padrón y Backups</text>
+
+        <line x1="764" y1="42" x2="800" y2="73" stroke="#1d3a63" stroke-width="1.5" class="route-anim"/>
+
+        <rect x="800" y="38" width="110" height="70" rx="9" fill="#ffffff" stroke="#c8d1de" stroke-width="1.5"/>
+        <text x="855" y="63" text-anchor="middle" font-size="10" font-weight="700" fill="#122642">NOTIFICACIONES</text>
+        <text x="855" y="80" text-anchor="middle" font-size="9" fill="#475467">Servicio SMS y</text>
+        <text x="855" y="94" text-anchor="middle" font-size="9" fill="#475467">Correo electrónico</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Esquema de Base de Datos -->
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Diseño relacional propuesto (3FN)</div>
+        <div class="card-desc">Entidades principales que garantizan unicidad de contribuyentes e integridad contable</div>
+      </div>
+      <span class="badge bg-neutral">6 tablas maestras</span>
+    </div>
+
+    <div class="schema-grid">
+      <div class="schema-card">
+        <div class="schema-head"><span>contribuyentes</span><span>Maestra</span></div>
+        <ul>
+          <li><span class="tag-pk">PK id_contribuyente</span><span>INT</span></li>
+          <li><span>dni_ruc (UNIQUE)</span><span>CHAR(11)</span></li>
+          <li><span>nombre_completo</span><span>VARCHAR</span></li>
+          <li><span>celular_sms</span><span>VARCHAR</span></li>
+          <li><span>consentimiento_datos</span><span>BOOL</span></li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <div class="schema-head"><span>predios</span><span>Catastro</span></div>
+        <ul>
+          <li><span class="tag-pk">PK cod_predio</span><span>CHAR(8)</span></li>
+          <li><span class="tag-fk">FK id_contribuyente</span><span>INT</span></li>
+          <li><span>sector_anexo</span><span>VARCHAR</span></li>
+          <li><span>estado_depuracion</span><span>ENUM</span></li>
+          <li><span>fecha_validacion</span><span>DATE</span></li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <div class="schema-head"><span>deudas_tributarias</span><span>Rentas</span></div>
+        <ul>
+          <li><span class="tag-pk">PK id_deuda</span><span>INT</span></li>
+          <li><span class="tag-fk">FK cod_predio</span><span>CHAR(8)</span></li>
+          <li><span>concepto_tributo</span><span>VARCHAR</span></li>
+          <li><span>periodo_fiscal</span><span>VARCHAR</span></li>
+          <li><span>monto / estado</span><span>DECIMAL</span></li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <div class="schema-head"><span>transacciones</span><span>Tesorería</span></div>
+        <ul>
+          <li><span class="tag-pk">PK num_comprobante</span><span>CHAR(12)</span></li>
+          <li><span class="tag-fk">FK id_deuda</span><span>INT</span></li>
+          <li><span>canal_pago</span><span>ENUM</span></li>
+          <li><span>firma_sha256</span><span>CHAR(64)</span></li>
+          <li><span>conciliado_bcp</span><span>BOOL</span></li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <div class="schema-head"><span>agentes_bodega</span><span>Red Local</span></div>
+        <ul>
+          <li><span class="tag-pk">PK id_bodega</span><span>CHAR(4)</span></li>
+          <li><span>razon_comercial</span><span>VARCHAR</span></li>
+          <li><span>sector_ubicacion</span><span>VARCHAR</span></li>
+          <li><span>titular_habilitado</span><span>VARCHAR</span></li>
+          <li><span>estado_operativo</span><span>ENUM</span></li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <div class="schema-head"><span>auditoria_eventos</span><span>Seguridad</span></div>
+        <ul>
+          <li><span class="tag-pk">PK id_evento</span><span>BIGINT</span></li>
+          <li><span>origen_rol</span><span>VARCHAR</span></li>
+          <li><span>recurso_api</span><span>VARCHAR</span></li>
+          <li><span>tiempo_respuesta_ms</span><span>INT</span></li>
+          <li><span>fecha_utc</span><span>DATETIME</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <span>© 2026 Municipalidad Distrital de Chupuro — Subgerencia de Rentas y Administración Tributaria</span>
+  <span>Plataforma PAGA CHUPURO · Convenio Interinstitucional BCP / Yape · Atención ciudadana segura</span>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script src="/catalogo.js"></script>
+<script src="/vistas.js"></script>
+<script src="/controlador.js"></script>
+</body>
+</html>
